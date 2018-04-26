@@ -1,0 +1,11 @@
+textarea{
+    vertical-align: top
+}
+.item{
+    padding: 1em;
+    margin: 0em 1em;
+    border: 1px solid grey
+}
+.item-list{
+    display: flex;
+}
