@@ -7,7 +7,9 @@
     "dev:mvvm:task_one": "webpack-dev-server --open --env.dev --env.name=task_one --env.college=mvvm",
     "build:mvvm:task_one": "webpack --env.prod --env.name=task_one --env.college=mvvm",
     "dev:mvvm:task_two": "webpack-dev-server --open --env.dev --env.name=task_two --env.college=mvvm",
-    "build:mvvm:task_two": "webpack --env.prod --env.name=task_two --env.college=mvvm"
+    "build:mvvm:task_two": "webpack --env.prod --env.name=task_two --env.college=mvvm",
+    "dev:design:task_one": "webpack-dev-server --open --env.dev --env.name=task_one --env.college=design",
+    "build:design:task_one": "webpack --env.prod --env.name=task_one --env.college=design"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

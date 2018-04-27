@@ -1,0 +1,25 @@
+.container{
+    text-align: center;
+    font-size: 2em;
+}
+.animation-text{
+    position: relative;
+    transition: all .2s ease;
+}
+.active{
+    color: blueviolet;
+}
+.animation-text::after{
+    position: absolute;
+    content: '';
+    width: 0%;
+    background: blueviolet;;
+    height: .1em;
+    bottom: -.2em;
+    left: 50%;
+    transition: inherit;
+}
+.active::after{
+    width: 100%;
+    left: 0;
+}
