@@ -22,7 +22,7 @@ module.exports = function(env, argv) {
 				chunkFilename: '[name].css'
 			}),
 			new HtmlWebpackPlugin({
-				template: env.name != 'mvvm' ? path.join(collegePath, 'src', name, 'index.html') : './template.html',
+				template: env.college != 'mvvm' ? path.join(collegePath, 'src', name, 'index.html') : './template.html',
 				filename: 'index.html'
 			})
 		],
