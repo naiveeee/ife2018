@@ -1,0 +1,13 @@
+.table-container{
+    text-align: center;
+}
+.table-info{
+    table-layout: fixed;
+    margin: 1em auto;
+}
+.table-info th{
+    width: 5em;
+}
+button{
+    font-size: inherit
+}
