@@ -1,0 +1,22 @@
+<template>
+    <div>
+        <basic on-notify="update($event)">
+            我是更好级别的父组件：{{text}}
+        </basic>
+    </div>
+</template>
+<script>
+export default {
+    initData: function () {
+        return {
+            text: '这是默认值'
+        }
+    },
+    update: function (text) {
+        this.data.set('text', text)
+    },
+    components: {
+        basic: require('./basic.san')
+    }
+}
+</script>

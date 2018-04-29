@@ -1,0 +1,30 @@
+<template>
+    <div>
+        <sub on-notify="update($event)" s-ref="sub">
+            我是父组件：<input value="{{text}}" on-input="changeSub($event)"/>
+        </sub>
+        <slot></slot>
+    </div>
+</template>
+<script>
+export default {
+    initData: function () {
+        return {
+            text: '这是默认值'
+        }
+    },
+    update: function (text) {
+        this.data.set('text', text)
+        this.fire('notify', text)
+    },
+    changeSub: function (event) {
+        let text = event.target.value
+        this.data.set('text', text)
+        this.ref('sub').data.set('input', this.data.get('text'))
+    },
+    components: {
+        sub: require('./sub.san')
+    }
+}
+</script>
+
