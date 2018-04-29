@@ -42,6 +42,12 @@ module.exports = function(env, argv) {
 					use: {
 						loader: 'babel-loader'
 					}
+				},
+				{
+					test: /\.san$/,
+					use: {
+						loader: 'san-loader'
+					}
 				}
 			]
 		}

@@ -33,9 +33,9 @@ export default san.defineComponent({
         return {
             input: '',
             status: {
-                UNDETERMINED: '待定',
-                ACCEPT: '合格',
-                REJECT: '不合格'
+                UNDETERMINED,
+                ACCEPT,
+                REJECT
             },
             items: [
                 {
