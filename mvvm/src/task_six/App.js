@@ -1,5 +1,4 @@
 import san from 'san'
-import 'font-awesome/css/font-awesome.css'
 
 const emailReg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$")
 const phoneReg = /^[1][3,4,5,7,8][0-9]{9}$/
