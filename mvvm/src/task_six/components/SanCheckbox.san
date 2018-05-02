@@ -1,0 +1,91 @@
+<template>
+    <label class="san-checkbox {{disabled ? 'disabled-checkbox' : null}}">
+        <i class="fa fa-{{indeterminate ? 'minus-square-o' : checked === trueValue ? 'check-square-o' : 'square-o'}}"></i>
+        <slot></slot>
+        <input type="checkbox" disabled="{{disabled}}" on-change="changeHandler" style="display: none">
+    </label>
+</template>
+<script>
+const DefaultProps = [
+    {
+        name: 'checked',
+        DataType: undefined,
+        default: false,
+        description: '双向绑定的值组件的值，如果使用了trueValue和falseValue则为对应字符串，否则为boolean'
+    },
+    {
+        name: 'disabled',
+        DataType: Boolean,
+        default: false,
+        description: '是否禁用当前项'
+    },
+    {
+        name: 'trueValue',
+        DataType: String,
+        default: true,
+        description: '选中时的值'
+    },
+    {
+        name: 'falseValue',
+        DataType: String,
+        default: false,
+        description: '未选中时的值'
+    },
+    {
+        name: 'indeterminate',
+        DataType: Boolean,
+        default: false,
+        description: '设置 indeterminate 状态，只负责样式控制'
+    }
+]
+export default {
+    initData: function () {
+        
+    },
+    inited: function () {
+        //类型校验
+        var _this = this
+        DefaultProps.map(function(item) {
+            if(_this.data.get(item.name) !== undefined){
+                if(item.DataType && _this.data.get(item.name).constructor !== item.DataType){
+                    throw new Error(`${item.name}的类型应为${Object.prototype.toString.apply(item.default)}`)
+                }
+            }
+            else{
+                _this.data.set(item.name, item.default)
+            }
+        })
+        //当传递进来的checked值不为trueValue或falseValue时，报错
+        if(this.data.get('checked') !== this.data.get('trueValue') && this.data.get('checked') !== this.data.get('falseValue'))
+        throw new Error(`checked初始值应为 trueValue falseValue 其中之一`)
+    },      
+    clickHandler: function (event) {
+        this.data.set('checked', ! this.data.get('checked'))
+        this.fire('change', event)
+    },
+    changeHandler: function (event) {
+        this.data.set('indeterminate', false)
+        var trueValue = this.data.get('trueValue'),
+            falseValue = this.data.get('falseValue'),
+            checked = this.data.get('checked')
+        if(checked === trueValue){
+            this.data.set('checked', falseValue)
+        }
+        if(checked === falseValue){
+            this.data.set('checked', trueValue)
+        }
+        this.fire('change', event)
+    }
+}
+</script>
+<style>
+    .san-checkbox{
+        cursor: pointer;
+    }
+    .disabled-checkbox{
+        color: darkgrey;
+        cursor: not-allowed;
+    }
+</style>
+
+

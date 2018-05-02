@@ -1,0 +1,24 @@
+<template>
+    <ul s-for="item, key in data" var-children="item.children">
+        <san-checkbox checked="{= item.checked =}" disabled="{= item.disabled =}" test="{= item.test =}"></san-checkbox>
+        <li s-for="subItem, subKey in children.sss">
+            123
+            <san-checkbox-tree data="{= data[key].children[subKey] =}"></san-checkbox-tree>
+        </li>
+    </ul>
+</template>
+<script>
+export default {
+    components: {
+        'san-checkbox': require('./SanCheckbox.san'),
+        'san-checkbox-tree': 'self'
+    },
+    inited: function () {
+        console.log(this.data.get('data'))
+    }
+}
+</script>
+<style>
+
+</style>
+

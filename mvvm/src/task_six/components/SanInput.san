@@ -1,0 +1,169 @@
+<template>
+    <div class="san-input-container {{verifyResult}}">
+        <input value="{= value =}" placeholder="{{placeholder}}" disabled="{{disabled}}" readonly="{{readonly}}" class="san-input" on-input="inputHandler" on-focus="foucsHandler" on-blur="blurHandler" />
+        <span class="san-input-text">{{text}}</span>
+    </div>
+</template>
+<script>
+const DefaultProps = [
+    {
+        name: 'value',
+        DataType: String,
+        default: '',
+        description: '双向绑定的值'
+    },
+    {
+        name: 'placeholder',
+        DataType: String,
+        default: '请输入文字',
+        description: '占位文本'
+    },
+    {
+        name: 'promptText',
+        DataType: String,
+        default: '请随便输点什么',
+        description: '提示文字'
+    },
+    {
+        name: 'disabled',
+        DataType: Boolean,
+        default: false,
+        description: '是否禁用'
+    },
+    {
+        name: 'readonly',
+        DataType: Boolean,
+        default: false,
+        description: '是否只读'
+    },
+    {
+        name: 'verify',
+        DataType: Function,
+        default: _ => _,
+        description: 'input输入校验函数 verify(input输入值, options)'
+    }
+]
+const DEFAULT = 'default'
+const SUCCESS = 'success'
+const NOTIFY = 'notify'
+const ERROR = 'error'
+
+export default {
+    initData: function () {
+        return {
+            verifyResult: DEFAULT,
+            resultText: {
+                [ERROR]: '格式错误',
+                [SUCCESS]: '格式正确'
+            }
+        }
+    },
+    inited: function () {
+        //类型校验
+        var _this = this
+        DefaultProps.map(function(item) {
+            if(_this.data.get(item.name) !== undefined){
+                if(_this.data.get(item.name).constructor !== item.DataType){
+                    throw new Error(`${item.name}的类型应为${Object.prototype.toString.apply(item.default)}`)
+                }
+            }
+            else{
+                _this.data.set(item.name, item.default)
+            }
+        })
+        ////提供了可以改变提示信息的函数: setErrorText, setSuccessText
+        this.data.set('options', {
+            setErrorText: this.data.set.bind(this.data, `resultText.${ERROR}`),
+            setSuccessText: this.data.set.bind(this.data, `resultText.${SUCCESS}`)
+        })
+    },
+    computed: {
+        text: function () {
+            var text = this.data.get('verifyResult')
+            if(text === NOTIFY){
+                return this.data.get('promptText')
+            }
+            if(text === SUCCESS){
+                return this.data.get(`resultText.${SUCCESS}`)
+            }
+            if(text === ERROR){
+                return this.data.get(`resultText.${ERROR}`)
+            }
+        }
+    },
+    inputHandler: function (event) {
+        //console.log(this.data.get('value'))
+        this.fire('input', event)
+    },
+    blurHandler: function (event) {
+        if(this.data.get('readonly') || this.data.get('disabled')) return
+        if(!this.data.get('verify')(event.target.value, this.data.get('options'))){
+            this.data.set('verifyResult', ERROR)
+        }
+        else{
+            this.data.set('verifyResult', SUCCESS)
+        }
+        this.fire('blur', event)
+    },
+    foucsHandler: function (event) {
+        if(this.data.get('readonly') || this.data.get('disabled')) return
+        this.data.set('verifyResult', NOTIFY)
+        this.fire('focus', event)
+    }
+}
+</script>
+
+<style>
+    .san-input{
+        padding: 8px;
+        font-size: 12px;
+        border: 1.4px solid;
+        border-radius: 1em;
+        box-sizing: border-box;
+        width: 100%;
+        transition: all .3s ease;
+    }
+    .san-input[readonly], .san-input[disabled]{
+        background-color: gainsboro;
+        border: 1px solid black;
+        cursor: not-allowed;
+    }
+    .san-input-container{
+        display: inline-block;
+        position: relative;
+    }
+    .san-input:focus{
+        outline: none;
+    }
+    .san-input-text{
+        position: absolute;
+        white-space: nowrap;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%) translateX(calc(100% + .5em))
+        
+    }
+    .san-input-container.default input{
+        border-color: rgba(0,0,0,.3);
+    }
+    .san-input-container.notify input{
+        border-color: orange;
+    }
+    .san-input-container.notify .san-input-text{
+        color: cornflowerblue;
+    }
+    .san-input-container.error input{
+        border-color: red;
+    }
+    .san-input-container.error .san-input-text{
+        color: red;
+    }
+    .san-input-container.success input{
+        border-color: blueviolet;
+    }
+    .san-input-container.success .san-input-text{
+        color: blueviolet;
+    }
+</style>
+
+
