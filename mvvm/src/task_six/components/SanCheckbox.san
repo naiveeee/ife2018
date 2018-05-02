@@ -1,9 +1,14 @@
 <template>
-    <label class="san-checkbox {{disabled ? 'disabled-checkbox' : null}}">
-        <i class="fa fa-{{indeterminate ? 'minus-square-o' : checked === trueValue ? 'check-square-o' : 'square-o'}}"></i>
-        <slot></slot>
-        <input type="checkbox" disabled="{{disabled}}" on-change="changeHandler" style="display: none">
-    </label>
+    <div>
+        <label class="san-checkbox {{disabled ? 'disabled-checkbox' : null}}">
+            <i class="fa fa-{{indeterminate ? 'minus-square-o' : checked === trueValue ? 'check-square-o' : 'square-o'}}"></i>
+            {{text}}
+            <input type="checkbox" disabled="{{disabled}}" on-change="changeHandler" style="display: none">
+        </label>
+        <div>
+            <slot></slot>
+        </div>
+    </div>
 </template>
 <script>
 const DefaultProps = [
@@ -36,6 +41,12 @@ const DefaultProps = [
         DataType: Boolean,
         default: false,
         description: '设置 indeterminate 状态，只负责样式控制'
+    },
+    {
+        name: 'text',
+        DataType: String,
+        default: 'hello',
+        description: ''
     }
 ]
 export default {

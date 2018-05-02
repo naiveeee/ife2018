@@ -71,7 +71,7 @@ export default {
                 _this.data.set(item.name, item.default)
             }
         })
-        ////提供了可以改变提示信息的函数: setErrorText, setSuccessText
+        //提供了可以改变提示信息的函数: setErrorText, setSuccessText
         this.data.set('options', {
             setErrorText: this.data.set.bind(this.data, `resultText.${ERROR}`),
             setSuccessText: this.data.set.bind(this.data, `resultText.${SUCCESS}`)

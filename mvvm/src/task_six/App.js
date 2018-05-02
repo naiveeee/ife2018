@@ -22,23 +22,31 @@ export default san.defineComponent({
             </div>
             <div class="container">
                 <div style="margin-top: 2em">
-                    默认（未绑定数据）：<san-checkbox on-change="changeHandler($event, 1)">hello</san-checkbox>
+                    默认（未绑定数据）:<san-checkbox on-change="changeHandler($event, 1)"></san-checkbox>
                 </div>
                 <div style="margin-top: 2em">
-                    未设置 checked:（{{checked_5}}）：<san-checkbox checked="{= checked_5 =}" on-change="changeHandler($event, 5)">hello</san-checkbox>
+                    未设置 checked（{{checked_5}}）:<san-checkbox checked="{= checked_5 =}" on-change="changeHandler($event, 5)"></san-checkbox>
                 </div>
                 <div style="margin-top: 2em">
-                    已设置 checked:（{{checked_2}}）<san-checkbox checked="{= checked_2 =}" trueValue="ok" falseValue='no' on-change="changeHandler($event, 2)">hello</san-checkbox>
+                    已设置 checked（{{checked_2}}）:<san-checkbox checked="{= checked_2 =}" trueValue="ok" falseValue='no' on-change="changeHandler($event, 2)"></san-checkbox>
                 </div>
                 <div style="margin-top: 2em">
-                    禁用(未选)：<san-checkbox disabled on-change="changeHandler($event, 2)">hello</san-checkbox>
+                    禁用(未选):<san-checkbox disabled on-change="changeHandler($event, 2)"></san-checkbox>
                 </div>
                 <div style="margin-top: 2em">
-                    禁用(已选)：<san-checkbox disabled checked="{{true}}" on-change="changeHandler($event, 2)">hello</san-checkbox>
+                    禁用(已选):<san-checkbox disabled checked="{{true}}" on-change="changeHandler($event, 2)"></san-checkbox>
                 </div>
                 <div style="margin-top: 2em">
-                indeterminate：<san-checkbox indeterminate checked="{= checked_4 =}" trueValue="ok" falseValue='no' on-change="changeHandler($event, 4)">hello</san-checkbox>
+                indeterminate：<san-checkbox indeterminate checked="{= checked_4 =}" trueValue="ok" falseValue='no' on-change="changeHandler($event, 4)"></san-checkbox>
                 </div>
+            </div>
+            <div class="question">
+                <p>&lt;parent s-for = "item in items" &gt;</p>
+                <p style="text-indent:2em">&lt;son s-for = "subItem in item" &gt;</p>
+                <p style="text-indent:2em">&lt;/son s-for = "subItem in item" &gt;</p>
+                <p>&lt;/parent s-for = "item in items" &gt;</p>
+                    这种方式似乎不能用？(第二个s-for中获取不到item)
+                <!--><san-checkbox-tree data="{= treeData =}"></san-checkbox-tree></!-->
             </div>
             <div style="clear: both"></div>
         </div>
