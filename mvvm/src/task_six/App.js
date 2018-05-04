@@ -40,13 +40,15 @@ export default san.defineComponent({
                 indeterminate：<san-checkbox indeterminate checked="{= checked_4 =}" trueValue="ok" falseValue='no' on-change="changeHandler($event, 4)"></san-checkbox>
                 </div>
             </div>
-            <div class="question">
+            <!--><div class="question">
                 <p>&lt;parent s-for = "item in items" &gt;</p>
                 <p style="text-indent:2em">&lt;son s-for = "subItem in item" &gt;</p>
                 <p style="text-indent:2em">&lt;/son s-for = "subItem in item" &gt;</p>
                 <p>&lt;/parent s-for = "item in items" &gt;</p>
                     这种方式似乎不能用？(第二个s-for中获取不到item)
-                <!--><san-checkbox-tree data="{= treeData =}"></san-checkbox-tree></!-->
+            </div></!-->
+            <div>
+                <!--><san-checkbox-tree data="{{ treeData }}"></san-checkbox-tree></!-->
             </div>
             <div style="clear: both"></div>
         </div>

@@ -1,11 +1,12 @@
 <template>
-    <ul s-for="item, key in data">
+    <div s-for="item, key in data">
         <san-checkbox checked="{= item.checked =}" disabled="{= item.disabled =}" test="{= item.test =}"></san-checkbox>
+
         <!-->这里似乎取不到item 不知道怎么解决</!-->
-        <li s-for="subItem, subKey in item.children">
-            <san-checkbox-tree data="{= data[key].children[subKey] =}"></san-checkbox-tree>
-        </li>
-    </ul>
+        <div s-for="subItem, subKey in item.children">
+            123
+        </div>
+    </div>
 </template>
 <script>
 export default {

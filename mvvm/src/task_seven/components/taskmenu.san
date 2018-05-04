@@ -1,0 +1,31 @@
+<template>
+    <div class="task-container">
+        <slot s-if="{{!data.title}}" name="title"></slot>
+        <h2 s-else>{{data.title}}</h2>
+        <div class="task-row" s-for="row,index in itemArr">
+            <slot s-for="item in row" var-name="item.name" var-title="item.title" var-content="item.content" var-time="item.time">
+            </slot>
+        </div>
+    <div>
+</template>
+<script>
+export default {
+    initData: function () {
+
+    },
+    inited: function () {
+        var res = [],
+            n = 3,
+            items = this.data.get('data.subItem')
+        for(let i = 0; i < items.length; i++) {
+            res.push(items.splice(0, n))    
+        }
+        this.data.set('itemArr', res)
+    }
+}
+</script>
+<style>
+
+</style>
+
+
