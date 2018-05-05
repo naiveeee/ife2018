@@ -1,7 +1,8 @@
 import san from 'san'
 
 export default san.defineComponent({
-template: `<div><taskmenu data="{{data}}">
+    template: `
+            <div><taskmenu data="{{data}}">
                 <div class="task-item">
                     <h3 style="color: purple">{{name}}</h3>
                     <p>{{title}}</p>
