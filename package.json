@@ -86,7 +86,8 @@
   },
   "dependencies": {
     "font-awesome": "^4.7.0",
-    "san": "^3.5.6"
+    "san": "^3.5.6",
+    "san-transition": "^1.1.0"
   },
   "repository": {
     "type": "git",

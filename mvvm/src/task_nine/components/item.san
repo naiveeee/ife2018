@@ -1,0 +1,39 @@
+<template>
+    <div class="item">
+        <span class="title" on-click="toggleShow">{{data.title}}</span>
+        <span class="details" s-if="show" s-transition="hook('slide')">{{data.details}}</span>
+    </div>
+</template>
+<script>
+import {transition} from 'san-transition'
+export default {
+    initData: function () {
+        return {
+            show: false
+        }
+    },
+    inited: function () {
+
+    },
+    toggleShow: function () {
+        this.data.set('show', ! this.data.get('show'))
+    },
+    hook: transition
+}
+</script>
+<style>
+.slide-enter, .slide-leave {
+  transition: all 1.5s;
+  display: inline-block;
+}
+.slide-enter, .slide-before-leave {
+  opacity: 1;
+  transform: translate(0, 0) rotate(0deg);
+}
+.slide-before-enter, .slide-leave {
+  opacity: 0;
+  transform: translate(100px, 0) rotate(180deg);
+}
+</style>
+
+
