@@ -1,0 +1,92 @@
+<template>
+    <div class="san-expand-panel" style="width: {{width ? width : '30vw'}}">
+        <div class="san-expand-panel-header">
+            {{title}}
+            <span class="san-expand-panel-header-icon" on-click="iconClickHandler">
+                <i class="fa fa-angle-down" style="transition: inherit;transform: rotate({{!expanded ? '0deg' : '180deg'}})"></i>
+            </span>
+        </div>
+        <div class="san-expand-panel-body" style="{{bodyStyle}}">
+            <slot name="body"></slot>
+        </div>
+    </div>
+</template>
+<script>
+export default {
+    initData: function () {
+        return {
+            expanded: false
+        }
+    },
+    inited: function () {
+
+    },
+    computed: {
+        bodyStyle: function () {
+            var expanded = this.data.get('expanded')
+            return {
+                'max-height': expanded ? '500px' : '0px',
+                'opacity': expanded ? null : '0',
+                'transform': `scaleY(${expanded ? null : '0'})`
+            }
+        }
+    },
+    iconClickHandler: function () {
+        this.data.set('expanded', ! this.data.get('expanded'))
+    },
+    compiled: function () {
+        console.log('这里是compiled')
+    },
+    inited: function () {
+        console.log('这里是inited')
+    },
+    created: function () {
+        console.log('这里是created')
+    },
+    attached: function () {
+        console.log('这里是attached')
+    },
+    detached: function () {
+        console.log('这里是detached')
+    },
+    disposed: function () {
+        console.log('这里是disposed')
+    }
+}
+</script>
+<style>
+    .san-expand-panel{
+        padding: 1em;
+        border: 2px solid #e8e8e8;
+    }
+    .san-expand-panel-header{
+        position: relative;
+        font-size: 1.2em
+    }
+    .san-expand-panel-body{
+        margin-top: 1em;
+        transform-origin: top;
+        transition: all .3s ease;
+        text-indent: 2em;
+        overflow: scroll
+    }
+    .san-expand-panel-header-icon{
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        width: 1em;
+        height: 1em;
+        text-align: center;
+        line-height: 1em;
+        padding: .3em;
+        border-radius: 50%;
+        transition: all .5s ease
+    }
+    .san-expand-panel-header-icon:hover{
+        background-color: rgba(88,150, 238);
+    }
+</style>
+
+

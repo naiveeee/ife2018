@@ -1,5 +1,8 @@
-var college = ['mvvm', 'basic', 'design'],
-    taskArr = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
+var tasks = {
+    mvvm: ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'],
+    design: ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'],
+    basic: ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
+} 
 function generateScript(mode, college, task) {
     if (mode == 'dev') {
         return `"dev:${college}:task_${task}":"webpack-dev-server --open --env.dev --env.name=task_${task} --env.college=${college}"`
@@ -8,9 +11,9 @@ function generateScript(mode, college, task) {
         return `"build:${college}:task_${task}":"webpack --env.prod --env.name=task_${task} --env.college=${college}"`
     }
 }
-for (let i = 0; i < college.length; i++) {
-    for (let j = 0; j < taskArr.length; j++) {
-        console.log(generateScript('dev', college[i], taskArr[j]) + ',')
-        console.log(generateScript('prod', college[i], taskArr[j]) + ',')
-    }
+for (let key in tasks) {
+    tasks[key].forEach(function (item) {
+        console.log(generateScript('dev', key, item) + ',')
+        console.log(generateScript('prod', key, item) + ',')
+    })
 }
