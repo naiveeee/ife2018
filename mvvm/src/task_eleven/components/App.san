@@ -8,6 +8,9 @@ export default {
     components: {
         'cascader': require('./cascader.san')
     },
+    inited: function () {
+        this.watch('value', val => console.log(val))
+    },
     initData: function () {
         return {
             show: true,

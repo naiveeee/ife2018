@@ -22,9 +22,7 @@ export default {
     }
   },
   clickHandler: function (key) {
-      if(this.data.get('selectedIndex') !== key){
-          this.data.set('selectedIndex', key)
-      }
+      this.data.set('selectedIndex', key)
       //这里确保没个组件只会展示它的直接孩子节点
       if(this.ref('child')){
           this.ref('child').data.set('childrenShow', false)
@@ -33,20 +31,13 @@ export default {
       this.data.set('childrenShow', true)
       //没有孩子节点时 通知父节点
       if(!this.data.get('data')[key].children) {
-          this.fire('selected', [this.data.get('data')[key].value])
+          this.fire('selected', [this.data.get('selectedValue')])
       }
   },
   selectedHandler: function (val) {
-      this.data.get('data').every((item,key) => {
-          //根据子元素来获取父元素的值
-          if(!item.children.every(subItem => !(subItem.value === val[0]))){
-              val.unshift(this.data.get(`data[${key}].value`))
-              return false
-          }
-          return true
-      })
+      val.unshift(this.data.get('selectedValue'))
       //如果不是根节点的话 继续向上派发事件
-      if(! this.data.get('isRoot')){
+      if(!this.data.get('isRoot')){
           this.fire('selected', val)
       }
       else{
@@ -62,10 +53,13 @@ export default {
             return this.data.get('data')[selectedIndex].children
         }
         return []
+      },
+      selectedValue: function () {
+          var selectedIndex = this.data.get('selectedIndex')
+          if(selectedIndex !== undefined) {
+              return this.data.get('data')[selectedIndex].value
+          }
       }
-  },
-  inited: function () {
-
   }
 }
 </script>

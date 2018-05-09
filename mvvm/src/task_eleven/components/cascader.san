@@ -27,7 +27,7 @@ export default {
       }
   },
   inited: function () {
-
+      
   },
   clickHandler: function () {
       this.data.set('show', ! this.data.get('show'))
