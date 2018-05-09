@@ -1,0 +1,56 @@
+<template>
+    <template>
+        <input class="cascader-input" value="{{valueStr}}" readonly on-click="clickHandler"/>
+        <div class="cascader-container {{show ? 'active' : null}}">
+            <cascader-panel show="{= show =}" value="{= value =}" isRoot="{{true}}" data="{{data}}"></cascader-panel>
+        </div>
+        <div style="clear: both"></div>
+    </template>
+</template>
+
+<script>
+export default {
+  components: {
+      'cascader-panel': require('./cascader-panel.san')
+  },
+  computed: {
+      valueStr: function () {
+          if(this.data.get('value')){
+              return this.data.get('value').join('/')
+          }
+          return '请选择'
+      }
+  },
+  initData: function () {
+      return {
+          show: false
+      }
+  },
+  inited: function () {
+
+  },
+  clickHandler: function () {
+      this.data.set('show', ! this.data.get('show'))
+  }
+}
+</script>
+
+<style>
+    .cascader-container{
+        display: inline-block;
+        position: absolute;
+        transition: all .5s ease;
+        transform-origin: top left;
+        transform: scale(0)
+    }
+    .cascader-container.active{
+        transform: scale(1)
+    }
+    .cascader-input{
+        display: inline-block;
+        width: 15em;
+        padding: .5em .8em;
+        border-radius: 1em;
+        font-size: 1em;
+    }
+</style>

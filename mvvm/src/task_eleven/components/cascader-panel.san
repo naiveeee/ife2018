@@ -1,0 +1,105 @@
+<template>
+    <template>
+        <ul class="cascader-item">
+            <li s-for="item, key in data" on-click="clickHandler(key)">
+                <label class="item-label {{key==selectedIndex ? 'selected' : null}}">{{item.label}}</label>
+                <i s-if ="{{item.children}}" class="fa {{key==selectedIndex ? 'fa-circle' : 'fa-circle-o'}}"></i>
+            </li>
+        </ul>
+        <cascader-panel s-ref="child" on-selected="selectedHandler($event)" isRoot="{{false}}" s-if="childrenShow && childrenData.length" data="{{childrenData}}"></cascader-panel>
+    </template>
+</template>
+
+<script>
+export default {
+  components: {
+      'cascader-panel': 'self'
+  },
+  initData: function () {
+    return {
+        childrenShow: false,
+        selectedIndex: undefined
+    }
+  },
+  clickHandler: function (key) {
+      if(this.data.get('selectedIndex') !== key){
+          this.data.set('selectedIndex', key)
+      }
+      //这里确保没个组件只会展示它的直接孩子节点
+      if(this.ref('child')){
+          this.ref('child').data.set('childrenShow', false)
+          this.ref('child').data.set('selectedIndex', undefined)
+      }
+      this.data.set('childrenShow', true)
+      //没有孩子节点时 通知父节点
+      if(!this.data.get('data')[key].children) {
+          this.fire('selected', [this.data.get('data')[key].value])
+      }
+  },
+  selectedHandler: function (val) {
+      this.data.get('data').every((item,key) => {
+          //根据子元素来获取父元素的值
+          if(!item.children.every(subItem => !(subItem.value === val[0]))){
+              val.unshift(this.data.get(`data[${key}].value`))
+              return false
+          }
+          return true
+      })
+      //如果不是根节点的话 继续向上派发事件
+      if(! this.data.get('isRoot')){
+          this.fire('selected', val)
+      }
+      else{
+          this.data.set('show', false)
+          this.data.set('value', val)
+      }
+  },
+  computed: {
+      childrenData: function () {
+        var selectedIndex = this.data.get('selectedIndex')
+        //没有选中或者选中了没有子元素的节点 
+        if(selectedIndex !== undefined && this.data.get('data')[selectedIndex] && this.data.get('data')[selectedIndex].children){
+            return this.data.get('data')[selectedIndex].children
+        }
+        return []
+      }
+  },
+  inited: function () {
+
+  }
+}
+</script>
+
+<style>
+    .item-label{
+        cursor: pointer;
+    }
+    .item-label.selected{
+        color: #409eff;
+    }
+    .cascader-item{
+        display: inline-block;
+        border: 2px solid #e8e8e8;
+        height: 15em;
+        overflow: scroll;
+        padding: .5em 0;
+        width: 15em;
+        /*这里很奇怪 不这么写布局始终有问题*/
+        float: left;
+        margin: 0 0 0 1em;
+    }
+    .cascader-item li{
+        padding: .5em 1em;
+        cursor: pointer;
+        position: relative;
+    }
+    .cascader-item li:hover{
+        background-color: #F6F7FA;
+    }
+    .cascader-item li i{
+        position: absolute;
+        right: 1em;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+</style>
