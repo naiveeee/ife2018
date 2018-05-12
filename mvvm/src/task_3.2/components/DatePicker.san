@@ -1,7 +1,7 @@
 <template>
     <div class="datepicker-container">
         <input class="datepicker-input" on-click="clickHandler" readonly value="{{value}}"/>
-        <datepicker-panel s-if="{{panelShow}}" on-selected="selectedHandler"></datepicker-panel>
+        <datepicker-panel s-if="{{panelShow}}" date="{{date}}" selectedDate="{{date}}" on-selected="selectedHandler"></datepicker-panel>
     </div>
 </template>
 <script>
@@ -13,12 +13,17 @@ export default {
     initData: function () {
         return {
             panelShow: false,
-            value: ''
+            date: new Date()
         }
     },
     selectedHandler: function (d) {
-        this.data.set('value', d.toLocaleDateString().replace(/\//g, '-'))
+        this.data.set('date', d)
         this.data.set('panelShow', false)
+    },
+    computed: {
+        value() {
+            return this.data.get('date').toLocaleDateString().replace(/\//g, '-')
+        }
     },
     clickHandler: function () {
         this.data.set('panelShow', ! this.data.get('panelShow'))

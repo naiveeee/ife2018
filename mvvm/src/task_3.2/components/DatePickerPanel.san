@@ -19,12 +19,6 @@ export default {
     components: {
         'date-table': require('./DateTable.san')
     },
-    initData: function () {
-        return {
-            date: new Date(),
-            selectedDate: new Date()
-        }
-    },
     goLastYear: function () {
         this.data.set('date', new Date(this.data.get('year') - 1, this.data.get('month')))
     },
