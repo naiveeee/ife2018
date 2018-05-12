@@ -108,6 +108,7 @@ export default {
 <style>
     .data-table-item.disabled{
         color: #e5e5e5;
+        cursor: not-allowed;
     }
     .data-table-item{
         cursor: pointer;

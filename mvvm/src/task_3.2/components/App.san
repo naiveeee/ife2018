@@ -1,6 +1,6 @@
 <template>
     <div style="text-align: center;margin-top: 50vh">
-        <datepicker></datepicker>
+        <datepicker date="{= date =}"></datepicker>
     </div>
 </template>
 <script>
@@ -10,8 +10,11 @@ export default {
     },
     initData: function () {
         return {
-            
+            date: new Date()
         }
+    },
+    inited() {
+        this.watch('date', val => console.log(val))
     }
 }
 </script>
