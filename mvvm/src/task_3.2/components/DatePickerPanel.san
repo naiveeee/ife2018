@@ -1,0 +1,138 @@
+<template>
+    <div class="datepicker-panel" id="{{id}}">
+        <div class="datepicker-panel-header">
+            <i on-click="goLastYear" class="fa fa-angle-double-left datepicker-icon datepicker-icon-left"></i>
+            <i on-click="goLastMonth" class="fa fa-angle-left datepicker-icon datepicker-icon-left"></i>
+            <span>{{year}} 年 {{month + 1}} 月</span>
+            <i on-click="goNextYear"class="fa fa-angle-double-right datepicker-icon datepicker-icon-right"></i>
+            <i on-click="goNextMonth" class="fa fa-angle-right datepicker-icon datepicker-icon-right"></i>
+        </div>
+        <div class="datepicker-panel-body">
+            <date-table date="{{date}}" selectedDate="{{selectedDate}}" on-itemSelected="selectedHandler"></date-table>
+        </div>
+    </div>
+</template>
+<script>
+import {transition} from 'san-transition'
+export default {
+    transition: transition('slide'),
+    components: {
+        'date-table': require('./DateTable.san')
+    },
+    initData: function () {
+        return {
+            date: new Date(),
+            selectedDate: new Date()
+        }
+    },
+    goLastYear: function () {
+        this.data.set('date', new Date(this.data.get('year') - 1, this.data.get('month')))
+    },
+    goLastMonth: function () {
+        this.data.set('date', new Date(this.data.get('year'), this.data.get('month') - 1))
+    },
+    goNextYear: function () {
+        this.data.set('date', new Date(this.data.get('year') + 1, this.data.get('month'))) 
+    },
+    goNextMonth: function () {
+        this.data.set('date', new Date(this.data.get('year'), this.data.get('month') + 1))
+    },
+    computed: {
+        year() {
+            return this.data.get('date').getFullYear()
+        },
+        month() {
+            return this.data.get('date').getMonth()
+        }
+    },
+    selectedHandler: function (d) {
+        //重新设置选中日期
+        this.data.set('selectedDate', d)
+        this.fire('selected', d)
+    },
+    inited: function () {
+        //设置容器id 用于定位
+        this.data.set('id', `datepicker-panel${this.data.id}`)
+    },
+    attached: function () {
+        //panel相对于父容器绝对定位 并在父容器viewTop变化时切换位置
+        var panelDOM = document.querySelector('#' + this.data.get('id')),
+            parent = panelDOM.parentNode,
+            height = panelDOM.offsetHeight
+        if(parent.getBoundingClientRect().top < height){
+            panelDOM.classList.add('top')
+        }
+        else[
+            panelDOM.classList.add('bottom')
+        ]
+        window.addEventListener('scroll', function () {
+            if(parent.getBoundingClientRect().top < height){
+                panelDOM.classList.remove('bottom')
+                panelDOM.classList.add('top')
+            }
+            else{
+                panelDOM.classList.remove('top')
+                panelDOM.classList.add('bottom')
+            }
+        })
+        panelDOM.addEventListener('click', () => event.stopPropagation())
+    },
+    
+}
+</script>
+<style>
+    .datepicker-panel{
+        position: absolute;
+        color: #606266;
+        border: 1px solid #e4e7ed;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+        background: #fff;
+        border-radius: 4px;
+        line-height: 30px;
+        margin: 5px 0;
+        width: 322px;
+        height: 300px;
+    }
+    .datepicker-panel.top{
+        top: calc(100% + .5em);
+    }
+    .datepicker-panel.bottom{
+        bottom: calc(100% + .5em);
+    }
+    .datepicker-panel-header{
+        margin: 12px 8px 8px 8px;
+        text-align: center;
+    }
+    .datepicker-panel-body{
+        position: relative;
+        margin: 15px;
+        width: 292px;
+    }
+    .datepicker-icon{
+        cursor: pointer;
+        margin-top: 8px;
+    }
+    .datepicker-icon:hover{
+        color: #409eff
+    }
+    .datepicker-icon-left{
+        float: left;
+        padding: 0 0 0 12px;
+    }
+    .datepicker-icon-right{
+        float: right;
+        padding: 0 12px 0 0px;
+    }
+    .slide-enter, .slide-leave {
+        transition: all .5s;
+        transform-origin: top;
+    }
+    .slide-enter, .slide-before-leave {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+    .slide-before-enter, .slide-leave {
+        opacity: 0;
+        transform: scaleY(0);
+    }
+</style>

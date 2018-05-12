@@ -1,0 +1,48 @@
+<template>
+    <div class="datepicker-container">
+        <input class="datepicker-input" on-click="clickHandler" readonly value="{{value}}"/>
+        <datepicker-panel s-if="{{panelShow}}" on-selected="selectedHandler"></datepicker-panel>
+    </div>
+</template>
+<script>
+export default {
+    components: {
+        'datepicker-input': require('./DatePickerInput.san'),
+        'datepicker-panel': require('./DatePickerPanel.san')
+    },
+    initData: function () {
+        return {
+            panelShow: false,
+            value: ''
+        }
+    },
+    selectedHandler: function (d) {
+        this.data.set('value', d.toLocaleDateString().replace(/\//g, '-'))
+        this.data.set('panelShow', false)
+    },
+    clickHandler: function () {
+        this.data.set('panelShow', ! this.data.get('panelShow'))
+        event.stopPropagation()
+    },
+    attached: function () {
+        //1.点击input时,进行panel切换(show or hide) 2.点击panel时,不做任何事情 3.点击非panel时 隐藏panel
+        //以上可以转化为:  1.点击input时，切换panel并阻止事件传播 2.点击panel时阻止事件传播
+        //              3.在最顶层(window) 进行panel的隐藏(这里已经不会监听到input和panel传递的事件了)
+        //这里有个问题:有多个panel时可能会同时展示 暂时没想到解决办法
+        window.addEventListener('click', () => this.data.set('panelShow', false))
+    }
+}
+</script>
+<style>
+    .datepicker-container{
+        display: inline-block;
+        position: relative;
+    }
+    .datepicker-input{
+        display: inline-block;
+        line-height: 2em;
+        width: 15em;
+    }
+</style>
+
+

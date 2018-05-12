@@ -1,0 +1,157 @@
+<template>
+    <table class="datepicker-table">
+        <thead>
+            <tr>
+                <th s-for="name in week">{{name}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr s-for="row,rowIndex in rows" class="data-table-row">
+                <td s-for="item,colIndex in row" on-click="itemSelectedHandler(rowIndex, colIndex)" class="data-table-item {{item.disabled ? 'disabled' : null}}">
+                    <div>
+                        <span class="{{item.selected ? 'selected' : null}}">{{item.content}}</span>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</template>
+<script>
+import {getStartDateOfMonth, nextDate} from '../utils'
+import {propsValidator} from '../../utils'
+const WEEKS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+const DefaultProps = [
+    {
+        name: 'firstDayOfWeek',
+        DataType: Number,
+        default: 7,
+        validator: val => val >= 1 && val <= 7
+    },
+    {
+        name: 'value'
+    },
+    {
+        name: 'defaultValue',
+        validator(val) {
+            return val === null || isDate(val) || (Array.isArray(val) && val.every(isDate))
+        }
+    },
+    {
+        name: 'date'
+    }
+]
+
+export default {
+    inited: function () {
+        //属性校验
+        propsValidator(DefaultProps, this)
+    },
+    initData: function () {
+        return {
+            week: WEEKS
+        }
+    },
+    computed: {
+        WEEKS() {
+            const week = this.data.get('firstDayOfWeek');
+            return WEEKS.concat(WEEKS).slice(week, week + 7);
+        },
+
+        year() {
+            return this.data.get('date').getFullYear();
+        },
+
+        month() {
+            return this.data.get('date').getMonth();
+        },
+        startDate() {
+            return getStartDateOfMonth(this.data.get('year'), this.data.get('month'));
+        },
+        selected() {
+            return {
+                year: this.data.get('selectedDate').getFullYear(),
+                month: this.data.get('selectedDate').getMonth(),
+                date: this.data.get('selectedDate').getDate()
+            }
+        },
+        rows () {
+            var res = [[], [], [], [], [], []]
+            var first = this.data.get('startDate'),
+                selected = this.data.get('selected')
+            for(let i = 0; i < res.length; i++) {
+                for(let j = 0; j < 7; j++) {
+                    let year = first.getFullYear(),
+                        month = first.getMonth(),
+                        date = first.getDate()
+                    let item = {
+                        date: first,
+                        selected: selected.year === year && selected.month === month && selected.date === date,
+                        content: first.getDate(),
+                        disabled: first.getMonth() == this.data.get('month') ? false : true
+                    }
+
+                    res[i].push(item)
+                    first = nextDate(first)
+                }
+            }
+            return res;
+        }
+    },
+    itemSelectedHandler: function (rowIndex, colIndex) {
+        var item = this.data.get('rows')[rowIndex][colIndex]
+        if(!item.disabled) {
+            this.fire('itemSelected', new Date(this.data.get('year'), this.data.get('month'), item.content))
+        }
+    }
+}
+</script>
+<style>
+    .data-table-item.disabled{
+        color: #e5e5e5;
+    }
+    .data-table-item{
+        cursor: pointer;
+    }
+    .selected{
+        background-color: #409eff;
+        color: white;
+    }
+    .datepicker-table{
+        table-layout: fixed;
+        width: 100%;
+        font-size: 12px;
+    }
+    .datepicker-table th{
+        padding: 5px;
+        color: #606266;
+        font-weight: 400;
+        border-bottom: 1px solid #ebeef5;
+    }
+    .datepicker-table td{
+        width: 32px;
+        height: 30px;
+        padding: 4px 0;
+        box-sizing: border-box;
+        text-align: center;
+        cursor: pointer;
+        position: relative;
+    }
+    .datepicker-table td:not(.disabled):hover{
+        color: #409eff
+    }
+    .data-table-item>div{
+        position: relative;
+    }
+    .datepicker-table td span{
+        width: 24px;
+        height: 24px;
+        display: block;
+        margin: 0 auto;
+        line-height: 24px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+    }
+</style>
