@@ -1,0 +1,55 @@
+<template>
+    <div class="san-ui-form-item">
+        <label class="san-ui-form-item-label">{{label}}</label>
+        <slot></slot>
+    </div>
+</template>
+<script>
+import {DataTypes} from 'san'
+export default {
+    dataTypes: {
+        field: DataTypes.string,
+        helpText: DataTypes.string,
+        label: DataTypes.string,
+        require: DataTypes.bool,
+        rules: DataTypes.arrayOf(DataTypes.object)
+    },
+    initData: function () {
+        return {
+            
+        }
+    },
+    messages: {
+        'UI-input-inited'(e) {
+            const target = e.target
+            // 对外
+            let rules = this.data.get('rules') ? [...this.data.get('rules')] : []
+            //  如果没有提供field 则用组件id代替
+            let field = this.data.get('field') ? this.data.get('field') : this.id
+            let isRequired = this.data.get('require')
+            // 合并required和一般校验规则
+            rules.unshift({
+                required: !!isRequired,
+                message: '必填项' 
+            })
+            //  formItem本身不校验 把校验规则委托给form统一校验
+            this.dispatch('UI-form-item-inited', {
+                field,
+                rules,
+                errCb: target.showValidateResult.bind(target),
+                resetCb: target.reset.bind(target)
+            })
+            // 对内
+            target.data.set('helpText', this.data.get('helpText'))
+        }
+    },
+    inited() {
+
+    }
+}
+</script>
+<style>
+    
+</style>
+
+

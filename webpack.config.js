@@ -37,6 +37,20 @@ module.exports = function(env, argv) {
 					]
 				},
 				{
+					test: /\.less$/,
+					use: [
+					  {
+						loader: devMode ? 'style-loader' : MinCssExtractPlugin.loader,
+					  },
+					  {
+						loader: 'css-loader'
+					  },
+					  {
+						loader: 'less-loader'
+					  }
+					]
+				},
+				{
 					test: /.js$/,
 					exclude: /node_modules/,
 					use: {

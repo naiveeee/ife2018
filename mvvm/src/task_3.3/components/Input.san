@@ -1,6 +1,6 @@
 <template>
     <div class="san-ui-input-wrap {{validated ? validateRes ? 'success' : 'warn' : null}}">
-        <input value="{= value =}" placeholder="{{helpText}}" readonly class="san-ui-input" on-click="fire('click')"/>
+        <input value="{= value =}" placeholder="{{helpText}}" class="san-ui-input"/>
         <span s-if="{{validated && validateRes}}" class="san-ui-input-success-icon"></span>
         <span s-if="{{validated && !validateRes}}" class="san-ui-input-error-text">{{errorText}}</span>
     </div>
@@ -11,10 +11,10 @@ export default {
     dataTypes: {
         helpText: DataTypes.string,
         errorText: DataTypes.string,
-        value: DataTypes.string
     },
     initData: function () {
         return {
+            value: '',
             validated: false,
             validateRes: undefined
         }
@@ -60,3 +60,6 @@ export default {
         border-color: aqua;
     }
 </style>
+
+
+

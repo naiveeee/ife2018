@@ -1,6 +1,6 @@
 <template>
     <div class="datepicker-container">
-        <input class="datepicker-input" on-click="clickHandler" readonly value="{{value}}"/>
+        <datepicker-input class="datepicker-input" on-click="clickHandler" value="{{value}}"></datepicker-input>
         <datepicker-panel s-if="{{panelShow}}" date="{{date}}" selectedDate="{{date}}" on-selected="selectedHandler"></datepicker-panel>
     </div>
 </template>
@@ -21,12 +21,21 @@ export default {
     },
     computed: {
         value() {
-            return this.data.get('date').toLocaleDateString().replace(/\//g, '-')
+            if(this.data.get('date')) {
+                return this.data.get('date').toLocaleDateString().replace(/\//g, '-')
+            }
+            return new Date()
         }
     },
     clickHandler: function () {
         this.data.set('panelShow', ! this.data.get('panelShow'))
         event.stopPropagation()
+    },
+    inited: function () {
+        console.log(this.data.get('date'))
+        if(!this.data.get('date')) {
+            this.data.set('date', new Date())
+        }
     },
     attached: function () {
         //1.点击input时,进行panel切换(show or hide) 2.点击panel时,不做任何事情 3.点击非panel时 隐藏panel
@@ -39,13 +48,10 @@ export default {
 </script>
 <style>
     .datepicker-container{
-        display: inline-block;
         position: relative;
     }
     .datepicker-input{
         display: inline-block;
-        line-height: 2em;
-        width: 15em;
     }
 </style>
 

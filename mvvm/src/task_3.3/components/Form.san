@@ -1,0 +1,78 @@
+<template>
+    <form class="san-ui-form">
+        <slot></slot>
+    </form>
+</template>
+<script>
+import Schema from 'async-validator'
+import {DataTypes} from 'san'
+export default {
+    dataTypes: {
+        formModel: DataTypes.object
+    },
+    initData: function () {
+        return {
+            descriptor : {},
+            errCbs: {},
+            resetCbs: {}
+        }
+    },
+    //  cb作为校验后的回调供外部使用
+    validateField: function (field, cb) {
+        if(!this.data.get('formModel').hasOwnProperty(field)) {
+            throw new Error(`can't find field: ${field}`)
+        }
+        let descriptor = this.data.get('descriptor')
+        new Schema({[field]: descriptor[field]}).validate({[field]: this.data.get(`formModel.${field}`)}, errors => {
+            this.data.get(`errCbs.${field}`)(errors)
+            cb(errors)
+        })
+    },
+    validate: function (cb) {
+        let descriptor = this.data.get('descriptor')
+        let fields = Object.keys(this.data.get('formModel'))
+        new Schema(descriptor).validate(this.data.get('formModel'), (errors, res) => {
+            fields.forEach(field => {
+                let errCb = this.data.get(`errCbs.${field}`)
+                //  formItem中没有该field则直接返回
+                if(!errCb) {
+                    return
+                }
+                if(res && res.hasOwnProperty(field)) {
+                    errCb(res[field])
+                } else {
+                    errCb(null)
+                }
+            })
+            cb && cb instanceof Function ? cb(res) : null
+        })
+    },
+    resetField: function (field) {
+        let resetcb = this.data.get(`resetCbs.${field}`)
+        resetcb ? resetcb() : null
+    },
+    reset: function () {
+        let fields = Object.keys(this.data.get('formModel'))
+        fields.forEach(field => {
+            let resetcb = this.data.get(`resetCbs.${field}`)
+            resetcb ? resetcb() : null
+        })
+    },
+    messages: {
+        'UI-form-item-inited'(e) {
+            //  获取从formItem的 校验规则、errCb、resetCb
+            this.data.set(`descriptor.${e.value.field}`, e.value.rules)
+            this.data.set(`errCbs.${e.value.field}`, e.value.errCb)
+            this.data.set(`resetCbs.${e.value.field}`, e.value.resetCb)
+        }
+    },
+    attached() {
+
+    }
+}
+</script>
+<style>
+    
+</style>
+
+
