@@ -1,0 +1,207 @@
+<template>
+    <section class="todoapp">
+        <header class="header">
+            <h1>todos</h1>
+            <input class="new-todo"
+                autofocus autocomplete="off"
+                placeholder="What needs to be done?"
+                value="{= newTodo =}"
+                on-keyup="addTodo"
+            >
+        </header>
+        <section class="main" s-if="todoList.length">
+            <input class="toggle-all" type="checkbox" checked="{{ remaining === 0 }}">
+            <label on-click="checkAll"></label>
+            <ul class="todo-list">
+                <li s-for="todo in filteredTodos"
+                    class="todo {{todo.completed ? 'completed' : null}} {{ todo.id == editedTodo.id ? 'editing' : null }}">
+                    <div class="view">
+                        <input class="toggle" type="checkbox" checked="{= todo.completed =}" on-click="selectTodo(todo)">
+                        <label on-dblclick="editTodo(todo)">{{todo.title}}</label>
+                        <button class="destroy" on-click="removeTodo(todo)"></button>
+                    </div>
+                    <input class="edit" type="text"
+                        s-ref="{{ 'input' + todo.id }}"
+                        value="{= editedTodo.title =}"
+                        on-keyup="cellEditHandler($event, todo)"
+                        on-blur="cellBlurHandler($event, todo)"
+                        >
+                </li>
+            </ul>
+        </section>
+        <footer class="footer" s-if="todoList.length">
+            <span class="todo-count">
+                <strong>{{ remaining }}</strong> {{ remaining === 1 ? 'item' : 'items' }} left
+            </span>
+            <ul class="filters">
+                <li><a href="#/all" class="{{ visibility == 'all' ? 'selected' : null }}">All</a></li>
+                <li><a href="#/active" class="{{ visibility == 'active' ? 'selected' : null }}">Active</a></li>
+                <li><a href="#/completed" class="{{ visibility == 'completed' ? 'selected' : null }}">Completed</a></li>
+            </ul>
+            <button class="clear-completed" on-click="removeCompleted" s-if="todoList.length > remaining">
+                Clear completed
+            </button>
+        </footer>
+    </section>
+</template>
+<script>
+import '../../../../node_modules/todomvc-common/base.css'
+import '../../../../node_modules/todomvc-app-css/index.css'
+//  参考vue-todomvc https://cn.vuejs.org/v2/examples/todomvc.html
+//  由于san中的data不是响应式的 实现方式和vue略有不同
+const filters = {
+  all: function (todos) {
+    return todos
+  },
+  active: function (todos) {
+    return todos.filter(function (todo) {
+      return !todo.completed
+    })
+  },
+  completed: function (todos) {
+    return todos.filter(function (todo) {
+      return todo.completed
+    })
+  }
+}
+const todoStorage = {
+  fetch() {
+    var todoList = JSON.parse(localStorage.getItem(this.data.get('localStorageKey')) || '[]')
+    todoList.forEach(function (todo, index) {
+        todo.id = index
+    })
+    todoStorage.uid = todoList.length
+    return todoList
+  },
+  save(todos) {
+    localStorage.setItem(this.data.get('localStorageKey'), JSON.stringify(todos))
+  }
+}
+function onHashChange () {
+  var visibility = window.location.hash.replace(/#\/?/, '')
+  if (filters[visibility]) {
+    this.data.set('visibility', visibility)
+  } else {
+    window.location.hash = ''
+    this.data.set('visibility', 'all')
+  }
+}
+export default {
+    initData() {
+        return {
+            localStorageKey: 'todoapp-sanjs',
+            newTodo: '',
+            //  这里存放正在修改的todo 取消修改时重置为null
+            editedTodo: null,
+            beforeEditCache: '',
+            todoList: [],
+            visibility: 'all',
+            allDone: false
+        }
+    },
+    computed: {
+        filteredTodos: function () {
+            let v = filters[this.data.get('visibility')](this.data.get('todoList'))
+            return v
+        },
+        remaining: function () {
+            return filters.active(this.data.get('todoList')).length
+        }
+    },
+    inited() {
+        //  初始化todoList
+        let todoList = todoStorage.fetch.call(this)
+        this.data.set('todoList', todoList)
+        this.watch('todoList', todoList => {
+            todoStorage.save.call(this, todoList)
+        })
+        //  初始化hash
+        window.addEventListener('hashchange', onHashChange.bind(this))
+        onHashChange.call(this)
+    },
+
+    selectTodo(todo) {
+        let selectedIndex = this.data.get('todoList').findIndex(item => item.id === todo.id)
+        this.data.set(`todoList[${selectedIndex}].completed`, !todo.completed)
+    },
+
+    addTodo: function (e) {
+        if (e.keyCode !== 13) {
+            return
+        }
+        var value = this.data.get('newTodo') && this.data.get('newTodo').trim()
+        if (!value) {
+            return
+        }
+        this.data.push('todoList',
+        {
+            id: todoStorage.uid++,
+            title: value,
+            completed: false
+        })
+        this.data.set('newTodo', '')
+    },
+
+    removeTodo: function (todo) {
+        this.data.remove('todoList', todo)
+    },
+
+    editTodo: function (todo) {
+        this.data.set('beforeEditCache', todo.title)
+        this.data.set('editedTodo', todo)
+        //  编辑时input自动聚焦
+        this.nextTick(() => {
+            this.ref('input' + todo.id).focus()
+        })
+    },
+
+    removeCompleted: function () {
+        this.data.set('todoList', filters.active(this.data.get('todoList')))
+    },
+
+    checkAll: function () {
+        this.data.set('allDone', !this.data.get('allDone'))
+        let remaining = this.data.get('remaining')
+        this.data.get('todoList').forEach((todo, index) => {
+            this.data.set(`todoList[${index}].completed`, remaining)
+        })
+    },
+
+    cellEditHandler: function (e, todo) {
+        if(e.keyCode === 13) {
+            let title = this.data.get('editedTodo.title')
+            if(!title.trim()) {
+                this.removeTodo(todo)
+            } else {
+                let selectedIndex = this.data.get('todoList').findIndex(item => item.id === todo.id)
+                this.data.set(`todoList[${selectedIndex}].title`, title) 
+            }
+            this.data.set('editedTodo', null)
+        }
+        else if (e.keyCode === 27) {
+            let selectedIndex = this.data.get('todoList').findIndex(item => item.id === todo.id)
+            this.data.set(`todoList[${selectedIndex}].title`, this.data.get('beforeEditCache'))
+            this.data.set('editedTodo', null)
+        }
+    },
+
+    cellBlurHandler: function (e, todo) {
+        //  由于按enter或esc键的时候也会触发blur事件 所以这里要判断一下
+        if(!this.data.get('editedTodo')) {
+            return
+        }
+        let title = this.data.get('editedTodo.title')
+        if(!title.trim()) {
+            console.log(todo)
+            this.removeTodo(todo)
+        } else {
+            let selectedIndex = this.data.get('todoList').findIndex(item => item.id === todo.id)
+            this.data.set(`todoList[${selectedIndex}].title`, title)
+            this.data.set('editedTodo', null)
+        }
+    }
+
+}
+</script>
+
+

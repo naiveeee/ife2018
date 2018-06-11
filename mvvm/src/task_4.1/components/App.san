@@ -1,0 +1,20 @@
+<template>
+    <div>
+        <ui-todo></ui-todo>
+    </div>
+</template>
+<script>
+export default {
+    components: {
+        'ui-todo': require('./Todo.san')
+    },
+    initData: function() {
+
+    }
+}
+</script>
+<style>
+    
+</style>
+
+
