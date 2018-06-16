@@ -1,0 +1,203 @@
+<template>
+    <section class="add-container">
+        <san-paper class="my-paper" zDepth="3">
+            <app-bar title="Add-Todo" class="add-appbar">
+                <ui-icon size='20' slot="left">menu</ui-icon>
+                <ui-icon size='20' slot="right" class="icon-close" on-click="close">close</ui-icon>
+            </app-bar>
+            <text-field 
+                label="标题" 
+                class="add-text-field title" 
+                labelFloat 
+                fullWidth 
+                maxLength="{{15}}"
+                inputValue="{= title =}"
+                errorText="{{inputErrorText}}"
+                on-textOverflow="handleInputOverflow($event)"/>
+            <text-field 
+                label="预计完成时间" 
+                class="add-text-field" 
+                labelFloat 
+                fullWidth
+                inputValue="{{dateString}}"
+                on-input-focus="inputHandler"
+                on-textOverflow="handleInputOverflow($event)"/>
+            <div style="position: relative">
+                <date-picker-panel
+                    s-ref="datepanel"
+                    s-if="{{panelShow}}" 
+                    date="{{date}}" 
+                    selectedDate="{{date}}" 
+                    on-selected="dateSelectedHandler">
+                </date-picker-panel>
+            </div>
+            <text-field 
+                label="备注" 
+                class="add-text-field remark" 
+                labelFloat
+                multiLine rows="{{2}}" 
+                rowsMax="{{3}}" 
+                fullWidth
+                maxLength="{{50}}"
+                inputValue="{= remarks =}"
+                errorText="{{multiLineInputErrorText}}"
+                on-textOverflow="handleMultiLineOverflow($event)"/>
+            <ul class="tag-list">
+                <span class="tag-title">tags：</span>
+                <li s-for="tag in tagList" style="background: {{tag.color}}" s-ref="{{tag.id}}" on-click="tagSelectedHandler(tag)">
+                    {{tag.description}}
+                </li>
+                <router-link to="/edittag">
+                    <i class="fa fa-pencil edit-category"></i>
+                </router-link>
+            </ul>
+            <div class="btn-group">
+                <ui-button variants="raised info" style="float: right" on-click="addTodo">
+                    <ui-icon>edit</ui-icon>确认添加
+                </ui-button>
+            </div>
+        </san-paper>
+    </section>
+</template>
+<script>
+import { TextField, ColorPicker, AppBar, Icon, Button} from 'san-mui'
+import { Link } from 'san-router'
+import Paper from 'san-mui/lib/Paper'
+import connect from '../store/connect'
+import swal from 'sweetalert'
+import {transition} from 'san-transition'
+export default connect({tagList: 'tagList'}, {addTodo: 'addTodo'})(
+{
+    components: {
+        'text-field': TextField,
+        'color-picker': ColorPicker,
+        'san-paper': Paper,
+        'app-bar': AppBar,
+        'ui-icon': Icon,
+        'ui-button': Button,
+        'router-link': Link,
+        'date-picker-panel': require('../../task_3.2/components/DatePickerPanel.san')
+    },
+    transition: transition('expand'),
+    initData() {
+        return {
+            date: new Date(),
+            dateString: '',
+            title: '',
+            remarks: '',
+            panelShow: false,
+            inputErrorText: '',
+            multiLineInputErrorText: '',
+            selectedTag: []
+        }
+    },
+    inited() {
+        
+    },
+    close() {
+        history.back()
+    },
+    addTodo() {
+        if(!this.data.get('title')) {
+            swal({icon: "error", title: 'title为必填项'})
+            return
+        }
+        if(this.data.get('inputErrorText') || this.data.get('multiLineInputErrorText')) {
+            return
+        }
+        this.actions.addTodo({
+            title: this.data.get('title'),
+            remarks: this.data.get('remarks'),
+            date: this.data.get('dateString'),
+            tagList: this.data.get('selectedTag')
+        })
+        this.close()
+    },
+    tagSelectedHandler(tag) {
+        if(this.data.get('selectedTag').includes(tag)) {
+            this.data.remove('selectedTag', tag)
+            this.ref(tag.id).classList.toggle('selected')
+        } else if(this.data.get('selectedTag').length >= 2) {
+            swal({icon: "error", title: '最多只能同时选两个标签！'})
+        } else {
+            this.data.push('selectedTag', tag)
+            this.ref(tag.id).classList.toggle('selected')
+        }
+    },
+    inputHandler() {
+        this.data.set('panelShow', true)
+    },
+    dateSelectedHandler(d) {
+        this.data.set('panelShow', false)
+        this.data.set('date', d)
+        this.data.set('dateString', d.toLocaleDateString().replace(/\//g, '-'))
+    },
+    handleInputOverflow(isOverflow) {
+        this.data.set('inputErrorText', isOverflow === 'true' ? 'Overflow!' : '');
+    },
+    handleMultiLineOverflow(isOverflow) {
+        this.data.set('multiLineInputErrorText', isOverflow === 'true' ? 'Overflow!' : '');
+    }
+})
+</script>
+<style lang="less">
+    .add-container {
+        position: absolute;
+        top: 20vh;
+        width: 550px;
+        .sm-appbar {
+            line-height: 3.5em;
+            .icon-close {
+                cursor: pointer;
+            }
+        }
+        .my-paper {
+            width: 100%;
+            .add-appbar {
+                margin-bottom: .5em;
+                height: 3.5em;
+            }
+            .add-text-field {
+                margin: .5em 1em;
+                width: calc(100% - 2em);
+            }
+            .tag-list {
+                display: inline-block;
+                padding-left: 1em;
+                .tag-title {
+                    font-size: 1.3em;
+                    color: rgba(0,0,0,0.38);
+                }
+                li {
+                    display: inline-block;
+                    margin: 5px 10px 5px 0;
+                    padding: 10px;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    color: #fff;
+                }
+                li.selected {
+                    box-shadow: 0 0 0 3px #ddd inset;
+                    outline: 3px solid black;
+                }
+                i {
+                    margin-left: .5em;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+    .expand-enter, .expand-leave {
+        transition: all .5s;
+    }
+    .expand-enter, .expand-before-leave {
+        opacity: 1;
+        transform: scale(1);
+    }
+    .expand-before-enter, .expand-leave {
+        opacity: 0;
+        transform: scale(0);
+    }
+</style>
+
+

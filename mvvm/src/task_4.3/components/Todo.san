@@ -1,0 +1,280 @@
+<template>
+    <section class="todoapp">
+        <header class="header">
+            <h1>todos</h1>
+            <div class="new-todo">
+                <label>"What needs to be done?"</label>
+                <router-link to="/addtodo">
+                    <ui-icon size='32' class="new-todo-icon">add_box</ui-icon>
+                </router-link>
+            </div>
+        </header>
+        <section>
+            <ul class="global-tag-list">
+                <li s-for="tag in tagList" style="background: {{tag.color}}" s-ref="{{tag.id}}" on-click="tagSelectedHandler(tag)">
+                    {{tag.description}}
+                </li>
+            </ul>
+        </section>
+        <section class="main" s-if="todoList.length">
+            <input class="toggle-all" type="checkbox" checked="{{ remaining === 0 }}">
+            <label on-click="checkAll"></label>
+            <ul class="todo-list">
+                <li s-for="todo in filteredTodos"
+                    class="todo {{todo.completed ? 'completed' : null}} {{ todo.id == editedTodo.id ? 'editing' : null }}">
+                    <div class="view">
+                        <input class="toggle" type="checkbox" checked="{= todo.completed =}" on-click="selectTodo(todo.id)">
+                        <label class="todo-title">
+                            {{todo.title}}
+                            <span class="aim-date" s-if="todo.date">预计完成时间：{{todo.date}}</span>
+                            <router-link to="/edittodo?id={{todo.id}}"><ui-icon size='24' class="op-icon edit-icon">edit</ui-icon></router-link>
+                            <ui-icon size='24' class="op-icon delete-icon" on-click="removeTodo(todo.id)">delete_forever</ui-icon>
+                        </label>
+                        <ul class="todo-tag-list">
+                            <li s-for="tag in todo.tagList" style="background: {{tag.color}}" s-ref="{{tag.id}}">
+                                {{tag.description}}
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </section>
+        <footer class="footer" s-if="todoList.length">
+            <span class="todo-count">
+                <strong>{{ remaining.length }}</strong> {{ remaining === 1 ? 'item' : 'items' }} left
+            </span>
+            <ul class="filters">
+                <li><router-link to="/todos?visibility=all" class="{{ visibility == 'all' ? 'selected' : null }}">All</router-link></li>
+                <li><router-link to="/todos?visibility=active" class="{{ visibility == 'active' ? 'selected' : null }}">Active</router-link></li>
+                <li><router-link to="/todos?visibility=completed" class="{{ visibility == 'completed' ? 'selected' : null }}">Completed</router-link></li>
+            </ul>
+            <button class="clear-completed" on-click="removeCompleted" s-if="todoList.length > remaining.length">
+                Clear completed
+            </button>
+        </footer>
+    </section>
+</template>
+<script>
+function filter(todos, {tagIdList, visibility}) {
+    return todos.filter(function (todo) {
+        let s = new Set(todo.tagList.map(item => item.id))
+        switch(visibility) {
+            case 'all':
+                return tagIdList.every(id => s.has(id))
+            case 'active':
+                return !todo.completed && tagIdList.every(id => s.has(id))
+            case 'completed':
+                return todo.completed && tagIdList.every(id => s.has(id))
+        }
+    })
+}
+import { Link } from 'san-router'
+import { Icon } from 'san-mui'
+import connect from '../store/connect'
+import {transition} from 'san-transition'
+export default connect({todoList: 'todoList', tagList: 'tagList'}, {addTodo: 'addTodo', removeTodo: 'removeTodo', selectTodo: 'selectTodo', checkAll: 'checkAll'})(
+{
+    components: {
+        'router-link': Link,
+        'ui-icon': Icon
+    },
+    transition: transition('move'),
+    initData() {
+        return {
+            localStorageKey: 'todoapp-sanjs',
+            newTodo: '',
+            //  这里存放正在修改的todo 取消修改时重置为null
+            editedTodo: null,
+            beforeEditCache: '',
+            allDone: false,
+            selectedTagIdList: []
+        }
+    },
+    computed: {
+        //  通过computed来根据路由变化修改视图
+        visibility: function () {
+            //  由于computed初次计算在route之前 所以要判断一下
+            return this.data.get('route') && this.data.get('route').query.visibility ? this.data.get('route').query.visibility : 'all'
+        },
+        filteredTodos: function () {
+            let todos  = this.data.get('todoList'),
+                tagIdList = this.data.get('selectedTagIdList'),
+                visibility = this.data.get('visibility')
+            todos = todos ? todos : []
+            tagIdList = tagIdList ? tagIdList : []
+            visibility = visibility ? visibility : 'all'
+            return filter(todos, {tagIdList, visibility})
+        },
+        completed: function () {
+            let todos  = this.data.get('todoList'),
+                tagIdList = this.data.get('selectedTagIdList')
+            todos = todos ? todos : []
+            tagIdList = tagIdList ? tagIdList : []
+            return filter(todos, {tagIdList, visibility: 'completed'})
+        },
+        remaining: function () {
+            let todos  = this.data.get('todoList'),
+                tagIdList = this.data.get('selectedTagIdList')
+            todos = todos ? todos : []
+            tagIdList = tagIdList ? tagIdList : []
+            return filter(todos, {tagIdList, visibility: 'active'})
+        }
+    },
+    inited() {
+        console.log(this.data.get('todoList'))
+        console.log(this.data.get('tagList'))
+    },
+
+    tagSelectedHandler(tag) {
+        let selectedTagIdList = this.data.get('selectedTagIdList')
+        if(selectedTagIdList.includes(tag.id)) {
+            this.data.remove('selectedTagIdList', tag.id)
+        } else {
+            this.data.push('selectedTagIdList', tag.id)
+        }
+        this.ref(tag.id).classList.toggle('selected')
+    },
+
+    selectTodo(id) {
+        this.actions.selectTodo(id)
+    },
+
+    removeTodo: function (id) {
+        this.actions.removeTodo([id])
+    },
+
+    removeCompleted: function () {
+        let todos  = this.data.get('todoList'),
+            tagIdList = this.data.get('selectedTagIdList')
+        this.actions.removeTodo(filter(todos, {tagIdList, visibility: 'completed'}).map(item => item.id))
+    },
+
+    checkAll: function () {
+        this.data.set('allDone', !this.data.get('allDone'))
+        let remaining = this.data.get('remaining')
+        if(!remaining.length) {
+            this.actions.checkAll(this.data.get('completed').map(item => item.id))
+        }
+        else {
+            this.actions.checkAll(this.data.get('remaining').map(item => item.id))
+        }
+        
+    }
+}
+)
+</script>
+<style lang="less">
+    .global-tag-list {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        padding-left: 0;
+        li {
+            font-size: 16px;
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 5px;
+            border-radius: 3px;
+            cursor: pointer;
+            color: #fff;
+        }
+        li.selected {
+            box-shadow: 0 0 0 3px #ddd inset;
+            outline: 3px solid black;
+        }
+        i {
+            margin-left: .5em;
+            cursor: pointer;
+        }
+    }
+    .new-todo {
+        label {
+            cursor: default;
+            color: #d9d9d9;
+        }
+        .new-todo-icon {
+            position: absolute;
+            right: 1em;
+            cursor: pointer;
+            color: #d9d9d9;
+            transition: color .2s;
+        }
+        .new-todo-icon:hover {
+            color: black;
+        }
+    }
+    .main .toggle-all + label {
+        top: -120px;
+        cursor: pointer;
+    }
+    .view {
+        position: relative;
+        .todo-title {
+            width: 103%;
+            .aim-date {
+                position: absolute;
+                left: 60px;
+                bottom: .3em;
+                font-size: 10px;
+                color: #d5d5d5;
+            }
+            .op-icon {
+                display: none;
+                margin-left: .3em;
+                cursor: pointer;
+                float: right;
+            }
+            .delete-icon {
+                color: rgba(255,0,0,.6);
+            }
+            .edit-icon {
+                color: rgba(33,150,243,.6);
+            }
+        }
+        .todo-title:hover {
+            .op-icon {
+                display: inline-block;
+            }
+        }
+        .todo-tag-list {
+            position: absolute;
+            display: inline-block;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 0;
+            li {
+                font-size: 16px;
+                display: inline-block;
+                margin: 5px 10px 5px 0;
+                padding: 5px;
+                border-radius: 3px;
+                cursor: pointer;
+                color: #fff;
+            }
+            li.selected {
+                box-shadow: 0 0 0 3px #ddd inset;
+                outline: 3px solid black;
+            }
+            i {
+                margin-left: .5em;
+                cursor: pointer;
+            }
+        }
+    }
+    .move-enter, .move-leave {
+        transition: all .5s;
+    }
+    .move-enter, .move-before-leave {
+        opacity: 1;
+    }
+    .move-before-enter {
+        opacity: 0;
+        transform: translateX(-10em);
+    }
+    .move-leave {
+        opacity: 0;
+        transform: translateX(10em);
+    }
+</style>
+
+

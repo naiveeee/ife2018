@@ -57,9 +57,9 @@ export default {
         if(parent.getBoundingClientRect().top < height){
             panelDOM.classList.add('top')
         }
-        else[
+        else{
             panelDOM.classList.add('bottom')
-        ]
+        }
         window.addEventListener('scroll', function () {
             if(parent.getBoundingClientRect().top < height){
                 panelDOM.classList.remove('bottom')
@@ -87,6 +87,7 @@ export default {
         margin: 5px 0;
         width: 322px;
         height: 300px;
+        z-index: 999;
     }
     .datepicker-panel.top{
         top: calc(100% + .5em);
