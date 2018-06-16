@@ -84,7 +84,9 @@ export default new Store({
                 tagList = getState('tagList'),
                 tagListMap = {}
             tagList.forEach(tag => tagListMap[tag.id] = tag)
-            return updateBuilder().map('todoList', todo => Object.assign(todo, {tagList: service.merageTags(todo.tagList, tagListMap)}))
+            return updateBuilder().map('todoList', todo => {
+                return Object.assign(todo, {tagList: service.merageTags(todo.tagList, tagListMap)})
+            })
         },
         editTag(tagList, {dispatch, getState}) {
             dispatch('beforeEditTag', tagList)

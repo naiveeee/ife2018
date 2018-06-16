@@ -35,8 +35,6 @@ export default {
         aim.forEach(tag => {
             if(tagListMap[tag.id]) {
                 res.push(tagListMap[tag.id])
-            } else {
-                res.push(tag)
             }
         })
         return res
