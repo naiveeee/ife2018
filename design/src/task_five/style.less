@@ -1,0 +1,85 @@
+.cube {
+    position:relative;
+    display: inline-block;  
+    height:300px;  
+    width:300px;  
+    margin:90px;  
+    transform-style:preserve-3d;
+    border: 1px solid black;
+    // 首先要画一个基准平面 立方体六个表面与之平行或垂直
+    transform: rotateX(30deg) rotateY(30deg);
+    div {
+        width: 300px;
+        height: 300px;
+        text-align: center;
+        line-height: 300px;
+        font-size: 3em;
+        opacity: .7;
+        // 子平面设置绝对定位，使之重合、方便调整
+        position: absolute;
+    }
+    .front {
+        background-color: red;
+        border: 1px solid black;
+        //  这里注意顺序 顺序不同结果不一样的
+        transform: translateZ(100px)
+    }
+    .back {
+        background-color: yellow;
+        border: 1px solid black;
+        transform: translateZ(-100px);
+    }
+    .top {
+        background-color: orange;
+        border: 1px solid black;
+        transform: rotateX(-90deg) translateZ(-100px); 
+    }
+    .bottom {
+        background-color: green;
+        border: 1px solid black;
+        transform: rotateX(90deg) translateZ(-100px); 
+    }
+    .left {
+        background-color: blue;
+        border: 1px solid black;
+        transform: rotateY(90deg) translateZ(-100px); 
+    }
+    .right {
+        background-color: purple;
+        border: 1px solid black;
+        transform: rotateY(-90deg) translateZ(-100px);
+    }
+}
+.cube1 {
+    animation: rotate1 linear infinite 4s;
+}
+.cube2 {
+    animation: rotate2 linear infinite 4s;
+}
+.cube3 {
+    animation: rotate3 linear infinite 4s;
+}
+@keyframes rotate1{
+    0% {
+        transform: rotateX(30deg) rotateY(30deg)
+    }
+    100% {
+        transform: rotateX(30deg) rotateY(390deg)
+    }
+}
+@keyframes rotate2{
+    0% {
+        transform: rotateX(30deg) rotateY(30deg)
+    }
+    100% {
+        transform: rotateX(390deg) rotateY(30deg)
+    }
+}
+@keyframes rotate3{
+    0% {
+        transform: rotateX(30deg) rotateY(30deg) rotateZ(0deg)
+    }
+    100% {
+        transform: rotateX(30deg) rotateY(30deg) rotateZ(360deg)
+    }
+}
