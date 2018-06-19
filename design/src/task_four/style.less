@@ -1,0 +1,30 @@
+#container {
+    position: relative;
+    .img-wrap {
+        position: absolute;
+        width: 250px;
+        height: 350px;
+        padding: 2em;
+        background-origin: content-box !important;
+        transition: .8s ease-in-out;
+        backface-visibility: hidden;
+    }
+    .img-wrap.front {
+        background: url('./pics/正面.jpg') no-repeat;
+        z-index: 2;
+        transform: rotateY(0)
+    }
+    .img-wrap.back {
+        background: url('./pics/反面.jpg') no-repeat;
+        z-index: 1;
+        transform: rotateY(-180deg)
+    }
+}
+#container:hover {
+    .img-wrap.front {
+        transform: rotateY(180deg)
+    }
+    .img-wrap.back {
+        transform: rotateY(0deg)
+    }
+}

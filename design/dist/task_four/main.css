@@ -1,0 +1,30 @@
+#container {
+  position: relative;
+}
+#container .img-wrap {
+  position: absolute;
+  width: 250px;
+  height: 350px;
+  padding: 2em;
+  background-origin: content-box !important;
+  transition: 0.8s ease-in-out;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+}
+#container .img-wrap.front {
+  background: url(4f5481ff02f2754714ca8cf240fd56d3.jpg) no-repeat;
+  z-index: 2;
+  transform: rotateY(0);
+}
+#container .img-wrap.back {
+  background: url(e82191ef8d62fbaeb4201af59d7c40d2.jpg) no-repeat;
+  z-index: 1;
+  transform: rotateY(-180deg);
+}
+#container:hover .img-wrap.front {
+  transform: rotateY(180deg);
+}
+#container:hover .img-wrap.back {
+  transform: rotateY(0deg);
+}
+
