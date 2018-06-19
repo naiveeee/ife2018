@@ -1,0 +1,32 @@
+.container:hover .ear-wrap .ear.left {
+  transform: rotate(-30deg);
+}
+.container:hover .ear-wrap .ear.right {
+  transform: rotate(30deg);
+}
+.container:hover .eye-wrap .eye .eye-bottom {
+  margin-top: 38px;
+}
+.container:hover .eye-wrap .eye .face-red {
+  opacity: .8;
+}
+.container:hover .mouth-wrap .mouth.left {
+  border-radius: 0% 40% 50% 40%;
+}
+.container:hover .mouth-wrap .mouth.right {
+  border-radius: 40% 40% 40% 50%;
+}
+.container .ear-wrap .ear {
+  transition: .8s;
+  transform: rotate(0deg);
+}
+.container .eye-wrap .eye .eye-bottom {
+  transition: .8s;
+}
+.container .eye-wrap .eye .face-red {
+  transition: .8s;
+}
+.container .mouth-wrap .mouth {
+  transition: .8s;
+}
+

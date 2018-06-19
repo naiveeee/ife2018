@@ -1,0 +1,51 @@
+.container:hover {
+    .ear-wrap {
+        .ear.left {
+            transform: rotate(-30deg);
+        }
+        .ear.right {
+            transform: rotate(30deg);
+        }
+    }
+    .eye-wrap {
+        .eye {
+            .eye-bottom {
+                margin-top: 38px;
+            }
+            .face-red {
+                opacity: .8;
+            }
+        }
+    }
+    .mouth-wrap {
+        .mouth.left {
+            border-radius: 0% 40% 50% 40%;
+        }
+        .mouth.right {
+            border-radius: 40% 40% 40% 50%;
+        }
+    }
+}
+.container {
+    .ear-wrap {
+        .ear {
+            transition: .8s;
+            transform: rotate(0deg);
+        }
+    }
+    .eye-wrap {
+        .eye {
+            .eye-bottom {
+                transition: .8s;
+            }
+            .face-red {
+                transition: .8s;
+            }
+        }
+    }
+    .mouth-wrap {
+        .mouth {
+            transition: .8s;
+        }
+    }
+}

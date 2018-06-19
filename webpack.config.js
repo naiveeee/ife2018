@@ -26,6 +26,25 @@ module.exports = function(env, argv) {
 				filename: 'index.html'
 			})
 		],
+		resolve: {
+			alias: {
+				'node_modules': path.resolve(__dirname, 'node_modules'),
+				svg: path.resolve(__dirname, 'svg')
+			}
+		},
+		optimization: {
+			runtimeChunk: {
+				name: 'manifest'
+		  },
+			splitChunks: {
+		  	chunks: "all", // 必须三选一： "initial" | "all"(推荐) | "async" (默认就是async)
+				minSize: 30000, // 最小尺寸，30000
+				minChunks: 1, // 最小 chunk ，默认1
+				maxAsyncRequests: 5, // 最大异步请求数， 默认5
+				maxInitialRequests : 3, // 最大初始化请求书，默认3
+				automaticNameDelimiter: '~',// 打包分隔符
+			}
+		},
 		module: {
 			rules: [
 				{
@@ -63,12 +82,18 @@ module.exports = function(env, argv) {
 						loader: 'san-loader'
 					}
 				},
+				{
+					test: /\.svg$/,
+					loader: 'svg-sprite-loader',
+					include: [path.resolve(__dirname, 'svg')]
+				},
 				{ 
 					test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
 					loader: "url-loader?limit=10000&mimetype=application/font-woff" 
 				},
 				{ 
-					test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
+					test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+					exclude: [path.resolve(__dirname, 'svg')],
 					loader: "file-loader" 
 				},
 			]
