@@ -13,7 +13,7 @@ class Slider {
         }
         //  全部图片加载好之后再展示
         this.loadImageList(this.imageList.map(item => item.dataset.src)).then(res => {
-            this.load = false
+            this.loading = false
             res.forEach((imageUrl, index) => {
                 if(imageUrl) {
                     this.imageList[index].src = imageUrl
