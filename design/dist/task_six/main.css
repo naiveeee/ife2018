@@ -14,35 +14,35 @@ body .image-list .image {
   box-sizing: border-box;
 }
 body .image-list .image:nth-child(1) {
-  background: url(6bb43657b47369b51b41712f81f421e5.png) no-repeat;
+  background: url(182b9976a21f7b2948ef2ea3fa4d98fe.webp) no-repeat;
   background-size: 100% 100%;
 }
 body .image-list .image.active:nth-child(1) {
   animation: animate_one 0.5s ease-out;
 }
 body .image-list .image:nth-child(2) {
-  background: url(23220cb78c57d36e9a9305739a646cb2.png) no-repeat;
+  background: url(93912f223b0c9ab9f66c85317cb117a6.webp) no-repeat;
   background-size: 100% 100%;
 }
 body .image-list .image.active:nth-child(2) {
   animation: animate_two 0.5s ease-out;
 }
 body .image-list .image:nth-child(3) {
-  background: url(3ee6297b1b9665207a73efc436e00996.png) no-repeat;
+  background: url(073879a4254fbded3967e16f71d2cf54.webp) no-repeat;
   background-size: 100% 100%;
 }
 body .image-list .image.active:nth-child(3) {
   animation: animate_three 0.5s ease-in;
 }
 body .image-list .image:nth-child(4) {
-  background: url(9108fc3bb944017af6bc1065e4ce0619.png) no-repeat;
+  background: url(4e9672ecfeac6b11171c10bebe11ce8d.webp) no-repeat;
   background-size: 100% 100%;
 }
 body .image-list .image.active:nth-child(4) {
   animation: animate_four 0.5s ease-out;
 }
 body .image-list .image:nth-child(5) {
-  background: url(c9c5ef233696781bea3af3fecba819bf.png) no-repeat;
+  background: url(d1d5eba2bc67dc8e0118607a2343a1be.webp) no-repeat;
   background-size: 100% 100%;
 }
 body .image-list .image.active:nth-child(5) {
@@ -85,23 +85,23 @@ body .thumbnail-list .thumbnail-item-wrap .thumbnail.active::after {
   opacity: 0;
 }
 body .thumbnail-list .thumbnail-item-wrap:nth-child(1) .thumbnail {
-  background: url(6bb43657b47369b51b41712f81f421e5.png) no-repeat;
+  background: url(182b9976a21f7b2948ef2ea3fa4d98fe.webp) no-repeat;
   background-size: 100% 100%;
 }
 body .thumbnail-list .thumbnail-item-wrap:nth-child(2) .thumbnail {
-  background: url(23220cb78c57d36e9a9305739a646cb2.png) no-repeat;
+  background: url(93912f223b0c9ab9f66c85317cb117a6.webp) no-repeat;
   background-size: 100% 100%;
 }
 body .thumbnail-list .thumbnail-item-wrap:nth-child(3) .thumbnail {
-  background: url(3ee6297b1b9665207a73efc436e00996.png) no-repeat;
+  background: url(073879a4254fbded3967e16f71d2cf54.webp) no-repeat;
   background-size: 100% 100%;
 }
 body .thumbnail-list .thumbnail-item-wrap:nth-child(4) .thumbnail {
-  background: url(9108fc3bb944017af6bc1065e4ce0619.png) no-repeat;
+  background: url(4e9672ecfeac6b11171c10bebe11ce8d.webp) no-repeat;
   background-size: 100% 100%;
 }
 body .thumbnail-list .thumbnail-item-wrap:nth-child(5) .thumbnail {
-  background: url(c9c5ef233696781bea3af3fecba819bf.png) no-repeat;
+  background: url(d1d5eba2bc67dc8e0118607a2343a1be.webp) no-repeat;
   background-size: 100% 100%;
 }
 body .thumbnail-list .thumbnail-item-wrap.active .thumbnail::after {
