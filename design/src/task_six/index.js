@@ -43,6 +43,7 @@ class Slider {
             let image = new Image()
             image.src = url
             image.onload = function(){
+                console.log(url)
                 resolve(url)
             }
             image.onerror = function(){
