@@ -7,28 +7,35 @@
     <title>全屏 Image Slider</title>
 <link href="main.css" rel="stylesheet"></head>
 <body>
+    <section class="loading">image loading...</section>
     <section class="image-list">
-        <div class="image"></div>
-        <div class="image"></div>
-        <div class="image"></div>
-        <div class="image"></div>
-        <div class="image"></div>
+        <img data-src="./image/微信图片_20180621152930.webp" class="image" />
+        <img data-src="./image/微信图片_20180621152939.webp" class="image" />
+        <img data-src="./image/微信图片_20180621152947.webp" class="image" />
+        <img data-src="./image/微信图片_20180621152952.webp" class="image" />
+        <img data-src="./image/微信图片_20180621153002.webp" class="image" />
     </section>
-    <aside class="thumbnail-list">
+    <aside class="thumbnail-list" style="display: none">
+        <!-- image貌似不能用::after这种伪元素 -->
         <div class="thumbnail-item-wrap">
-            <div role="image" class="thumbnail active"></div>
+            <img class="thumbnail active">
+            <div class="mask"></div>
         </div>
         <div class="thumbnail-item-wrap">
-            <div role="image" class="thumbnail"></div>
+            <img class="thumbnail">
+            <div class="mask"></div>
         </div>
         <div class="thumbnail-item-wrap">
-            <div role="image" class="thumbnail"></div>
+            <img class="thumbnail">
+            <div class="mask"></div>
         </div>
         <div class="thumbnail-item-wrap">
-            <div role="image" class="thumbnail"></div>
+            <img class="thumbnail">
+            <div class="mask"></div>
         </div>
         <div class="thumbnail-item-wrap">
-            <div role="image" class="thumbnail"></div>
+            <image class="thumbnail">
+            <div class="mask"></div>
         </div>
     </aside>
 <script type="text/javascript" src="manifest.js"></script><script type="text/javascript" src="main.js"></script></body>
