@@ -1,5 +1,5 @@
 import './style.less'
-require.context("./image", false, /\.webp$/);
+// require.context("./image", false, /\.webp$/)
 class Slider {
     constructor() {
         this.thumbnailList = Array.prototype.map.call(document.querySelectorAll('.thumbnail'), item => item)
@@ -13,6 +13,7 @@ class Slider {
         }
         //  全部图片加载好之后再展示
         this.loadImageList(this.imageList.map(item => item.dataset.src)).then(res => {
+            console.log('finished!')
             this.loading = false
             res.forEach((imageUrl, index) => {
                 if(imageUrl) {
