@@ -23,5 +23,4 @@ function blurHandler(e) {
 inputArray.forEach(item => item.addEventListener('blur', blurHandler))
 submitButton.addEventListener('click', function(e) {
     event.preventDefault()
-    e.target.classList.remove('pulse')
 })
