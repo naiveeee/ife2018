@@ -92,3 +92,9 @@ class Slider {
 }
 let slider = new Slider()
 slider.begin()
+function random() {
+    let res = ''
+    for(let i = 0; i < 10; i++) {
+        res+= Math.random()
+    }
+}
