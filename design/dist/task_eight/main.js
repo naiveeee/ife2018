@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[2],[,function(e,a,n){"use strict";var o,t=n(0);((o=t)&&o.__esModule?o:{default:o}).default.loadAnimation({container:document.getElementById("app"),renderer:"svg",loop:!0,autoplay:!0,path:"./data.json"})}],[[1,0,1]]]);
