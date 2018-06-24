@@ -4,9 +4,13 @@ import EditTodo from './components/EditTodo.san'
 import EditTag from './components/EditTag.san'
 import {router} from 'san-router'
 //  style
-import '../../../node_modules/todomvc-common/base.css'
-import '../../../node_modules/todomvc-app-css/index.css'
+import 'node_modules/todomvc-common/base.css'
+import 'node_modules/todomvc-app-css/index.css'
 import 'san-mui/lib/index.css';
+//  svg
+// const requireAll = requireContext => requireContext.keys().map(requireContext)
+// const req = require.context('svg', false, /\.svg$/)
+// requireAll(req)
 // router cofing
 router.add({
     rule: '/',

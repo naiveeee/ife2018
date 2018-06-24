@@ -1,0 +1,76 @@
+<template>
+    <section>
+        <slot name="content-title">
+
+        </slot>
+        <slot name="content-item" s-for="item in dataArray" var-title="item.title" var-img="item.imgUrl" var-medium="item.medium" var-reportTime="item.reportTime">
+            
+        </slot>
+        <slot name="loading" s-if="isLoading">
+            
+        </slot>
+    </section>
+</template>
+<script>
+import {DataTypes} from 'san'
+export default {
+    dataTypes: {
+        //  展示数据
+        dataArray: DataTypes.arrayOf(DataTypes.shape({
+            title: DataTypes.string,
+            imgUrl: DataTypes.string,
+            medium: DataTypes.string,
+            reportTime: DataTypes.string
+        })),
+        //  监听滚动的元素
+        elementSelector: DataTypes.string.isRequired,
+        //  异步数据获取方法
+        updateData: DataTypes.func,
+        //  是否工作（多个组件有同样的elementSelector时可能会用到）
+        isActive: DataTypes.bool
+    },
+    initData() {
+        return {
+            isLoading: false
+        }
+    },
+    scrollHandler() {
+        if(!this.data.get('isActive')) {
+            return
+        }
+        console.log('ok')
+        let target = document.querySelector(this.data.get('elementSelector'))
+        if(target.scrollHeight - target.scrollTop < target.clientHeight + 100) {
+            //  确保loading同时只能执行一次
+            if(!this.data.get('isLoading')) {
+                console.log('loading')
+                this.data.set('isLoading', true)
+                this.data.get('updateData')().then(val => {
+                    if(val instanceof Array) {
+                        val.forEach(item => this.data.push('dataArray', item))
+                    } else {
+                        this.data.push('dataArray', val)
+                    }
+                    this.data.set('isLoading', false)
+                })
+            }
+        }
+    },
+    attached() {
+        let target = document.querySelector(this.data.get('elementSelector')),
+            scrollHandler = this.scrollHandler.bind(this)
+        if(!target) {
+            return
+        }
+        //  全局滚动条 (监听window的滚动事件，获取htmlElement的scrollTop)
+        if(target.nodeName === 'HTML') {
+            window.addEventListener('scroll', scrollHandler)
+        } else {
+            target.addEventListener('scroll', scrollHandler)
+        }
+    }
+}
+</script>
+<style lang="less">
+
+</style>

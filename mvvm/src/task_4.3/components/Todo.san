@@ -164,6 +164,13 @@ export default connect({todoList: 'todoList', tagList: 'tagList'}, {addTodo: 'ad
 )
 </script>
 <style lang="less">
+    .mysvg {
+        width: 16px;
+        height: 16px;
+        margin-right: 5px;
+        vertical-align: -2px;
+        fill: #369;
+    }
     .global-tag-list {
         width: 100%;
         display: flex;

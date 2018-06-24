@@ -1,0 +1,119 @@
+<template>
+    <div>
+        <section class="tab-wrapper" on-click="tabClickHandler">
+            <span s-for="item in infiniteScrollArray" class="{{item.isActive ? 'active' : null}}">{{item.name}}</span>
+        </section>
+        <infinite-scroll s-for="item in infiniteScrollArray" id="{{item.name}}" class="news-container {{item.isActive ? 'active' : null}}" dataArray="{{item.dataArray}}" elementSelector="{{item.target}}" isActive="{{item.isActive}}" updateData="{{item.getData}}">
+            <h1 slot="content-title">infinite scroll {{item.name}}</h1>
+            <div slot="content-item" class="item">
+                <h3 class="item-title">{{title}}</h3>
+                <img src="{{img}}"/>
+                <p class="origin">
+                    <span class="medium">{{medium}}</span>
+                    <span class="report-time">{{reportTime}}</span>
+                </p>
+            </div>
+            <div slot="loading">loading...</div>
+        </infinite-scroll>
+    </div>
+</template>
+<script>
+import Mock from '../mock'
+export default {
+    components: {
+        //  无线滚动组件内部只实现滚动获取数据功能 样式由外部实现
+        'infinite-scroll': require('./InfiniteScroll.san')
+    },
+    initData() {
+        let mock1 = new Mock(), 
+            mock2 = new Mock(), 
+            mock3 = new Mock()
+        return {
+            infiniteScrollArray: [
+                {
+                    name: '全局滚动1',
+                    isActive: true,
+                    target: 'html',
+                    dataArray: mock1.mockInitialData(),
+                    getData: mock1.mockAsyncRequest.bind(mock1)
+                },
+                {
+                    name: '全局滚动2',
+                    isActive: false,
+                    target: 'html',
+                    dataArray: mock2.mockInitialData(),
+                    getData: mock2.mockAsyncRequest.bind(mock2)
+                },
+                {
+                    name: '局部滚动',
+                    isActive: false,
+                    target: '#局部滚动',
+                    dataArray: mock3.mockInitialData(),
+                    getData: mock3.mockAsyncRequest.bind(mock3)
+                }
+            ]
+        }
+    },
+    tabClickHandler(e) {
+        if(e.target.nodeName === 'SPAN') {
+            let id = e.target.textContent
+            this.data.get('infiniteScrollArray').forEach((item, index) => {
+                if(item.name === id) {
+                    this.data.set(`infiniteScrollArray[${index}].isActive`, true)
+                } else {
+                    this.data.set(`infiniteScrollArray[${index}].isActive`, false)
+                }
+            })
+        }
+    }
+}
+</script>
+<style lang="less">
+    .tab-wrapper {
+        text-align: center;
+        margin: 1em 0;
+        font-size: 1.5em;
+        span {
+            padding: .3em .5em;
+            cursor: pointer;
+            border: 0px;
+            border-radius: 1em;
+            transition: all .3s ease;
+            box-sizing: border-box;
+            display: inline-block;
+            line-height: 2.5em;
+            width: 7.5em;
+        }
+        span.active {
+            border: 2px solid blueviolet;
+        }
+    }
+    .news-container {
+        display: none;
+        margin: 0 auto;
+        width: 60vw;
+        border: 1px solid black;
+        border-radius: 2em;
+        padding: 2em 1em;
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 1em;
+        }
+        &.active {
+            display: block;
+        }
+    }
+    .item {
+        border-bottom: 1px solid #d5d5d5;
+        margin-bottom: 2em;
+        .origin {
+            font-size: .8em;
+            color: rgba(0, 0, 0, .4)
+        }
+    }
+    #局部滚动 {
+        height: 100vh;
+        overflow-y: scroll;
+    }
+</style>

@@ -59,13 +59,16 @@ module.exports = function(env, argv) {
 					test: /\.less$/,
 					use: [
 					  {
-						loader: devMode ? 'style-loader' : MinCssExtractPlugin.loader,
+							loader: devMode ? 'style-loader' : MinCssExtractPlugin.loader,
 					  },
 					  {
-						loader: 'css-loader'
-					  },
+							loader: 'css-loader'
+						},
+						{
+							loader: 'postcss-loader'
+						},
 					  {
-						loader: 'less-loader'
+							loader: 'less-loader'
 					  }
 					]
 				},
@@ -90,6 +93,14 @@ module.exports = function(env, argv) {
 				{ 
 					test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
 					loader: "url-loader?limit=10000&mimetype=application/font-woff" 
+				},
+				{
+					test: /\.(png|jpg|gif|webp)$/,
+					loader: 'url-loader',
+					options: {
+						limit: 1024,
+						name: 'image/[name].[ext]'
+					}
 				},
 				{ 
 					test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,

@@ -1,8 +1,11 @@
 import san from 'san'
-
+import 'svg/关闭.svg'
 export default san.defineComponent({
     template: `
         <div>
+            <svg>
+                <use id="#关闭"></use>
+            </svg>
             <div class="item-list">
                 <span class="item">
                     姓名：<input type="text" value="{= name =}"/>
